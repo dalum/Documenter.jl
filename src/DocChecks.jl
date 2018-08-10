@@ -179,7 +179,12 @@ function doctest(block::Markdown.Code, meta::Dict, doc::Documents.Document, page
 
         for expr in [get(meta, :DocTestSetup, []); get(meta[:LocalDocTestArguments], :setup, [])]
             Meta.isexpr(expr, :block) && (expr.head = :toplevel)
-            Core.eval(sandbox, expr)
+            try
+                Core.eval(sandbox, expr)
+            catch e
+                Compat.@warn("Error evaluating expression from doctest setup, ignoring.",
+                             expr = expr)
+            end
         end
         if occursin(r"^julia> "m, block.code)
             eval_repl(block, sandbox, meta, doc, page)
