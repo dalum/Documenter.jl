@@ -33,63 +33,12 @@ The following sections outline how to enable this for your own package.
 
 ## SSH Deploy Keys
 
-Deploy keys provide push access to a *single* repository, to allow secure deployment of generated documentation from Travis to GitHub.
+Deploy keys provide push access to a *single* repository, to allow secure deployment of generated documentation from Travis to GitHub. The `DocumenterTools` package provides a function,
+`DocumenterTools.Travis.genkeys` that generate a set of SSH keys.
 
-!!! note
-
-    You will need several command line programs installed for the following steps to work.
-    They are `which`, `git`, and `ssh-keygen`. Make sure these are installed before you
-    begin this section.
-
-Open a Julia REPL and import [`Documenter`](@ref).
-
-```jlcon
-julia> using Documenter
-```
-
-Then call the [`Travis.genkeys`](@ref) function as follows:
-
-```jlcon
-julia> Travis.genkeys("MyPackage")
-```
-
-where `"MyPackage"` is the name of the package you would like to create deploy keys for. The
-output will look similar to the text below:
-
-```
-INFO: add the public key below to https://github.com/USER/REPO/settings/keys
-      with read/write access:
-
-[SSH PUBLIC KEY HERE]
-
-INFO: add a secure environment variable named 'DOCUMENTER_KEY' to
-      https://travis-ci.org/USER/REPO/settings with value:
-
-[LONG BASE64 ENCODED PRIVATE KEY]
-```
-
-Follow the instructions that are printed out, namely:
-
- 1. Add the public ssh key to your settings page for the GitHub repository that you are
-    setting up by following the `.../settings/key` link provided. Click on **`Add deploy
-    key`**, enter the name **`documenter`** as the title, and copy the public key into the
-    **`Key`** field.  Note that you should include **no whitespace** when copying the key.
-    Check **`Allow write access`** to allow Documenter to commit the generated documentation
-    to the repo.
-
- 2. Next add the long private key to the Travis settings page using the provided link. Again
-    note that you should include **no whitespace** when copying the key. In the **`Environment
-    Variables`** section add a key with the name `DOCUMENTER_KEY` and the value that was printed
-    out. **Do not** set the variable to be displayed in the build log. Then click **`Add`**.
-
-    !!! warning "Security warning"
-
-        To reiterate: make sure that the "Display value in build log" option is **OFF** for
-        the variable, so that it does not get printed when the tests run. This
-        base64-encoded string contains the *unencrypted* private key that gives full write
-        access to your repository, so it must be kept safe.  Also, make sure that you never
-        expose this variable in your tests, nor merge any code that does. You can read more
-        about Travis environment variables in [Travis User Documentation](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
+!!! warning
+    Read the `DocumenterTools` documentation carefully. SSH keys give push access
+    to the repository, and should be handled with care.
 
 ## `.travis.yml` Configuration
 
