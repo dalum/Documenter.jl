@@ -118,7 +118,7 @@ function parseblock(code::AbstractString, doc, page; skip = 0, keywords = true)
     code = string(code, '\n')
     code = last(split(code, '\n', limit = skip + 1))
     # Check whether we have windows-style line endings.
-    offset = occursin("\n\r", code) ? 2 : 1
+    offset = occursin("\r\n", code) ? 2 : 1
     endofstr = lastindex(code)
     results = []
     cursor = 1
